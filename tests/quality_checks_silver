@@ -1,0 +1,41 @@
+-- check for duplicates
+select 
+cst_id,
+count(*)
+from bronze.crm_cust_info
+group by cst_id
+having count(*) >1;
+
+--check for unwanted spaces for all the string values
+select 
+prd_nm
+from silver.crm_prd_info
+where prd_nm !=  trim(prd_nm);
+
+--check for data consistency & standardization
+select distinct prd_line
+from silver.crm_prd_info;
+
+--check for invalid dates
+select * from 
+bronze.crm_sales_details
+where sls_order_dt > sls_due_dt
+select *  from silver.crm_prd_info;
+
+--- sales = qunatity* price
+---valeus must not be equal to null
+select 
+sls_sales,
+sls_quantity,
+sls_price
+from bronze.crm_sales_details
+where sls_sales < 0 or sls_quantity < 0 or sls_price < 0;
+select * from silver.crm_sales_details;
+
+----identify out of range dates
+select
+bdate
+from bronze.erp_cust_az12
+where bdate < '1924-01-01' or bdate > getdate();
+
+select distinct cntry from silver.erp_loc_a101;
